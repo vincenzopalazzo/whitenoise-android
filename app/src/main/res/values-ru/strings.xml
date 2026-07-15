@@ -1034,4 +1034,20 @@
     <string name="sign_in_error_public_key">Это открытый ключ. Введите свой секретный ключ (nsec) для входа.</string>
     <string name="group_add_members_after_create">Участников можно добавить после создания группы.</string>
     <string name="confirm_sole_admin_transfer_then_leave_message">Вы единственный админ. %1$s станет админом, а вы покинете группу.</string>
+    <string name="sticker">Стикер</string>
+    <string name="stickers">Стикеры</string>
+    <string name="stickers_settings_subtitle">Поиск, импорт и управление наборами стикеров</string>
+    <string name="sticker_import_notice">Вставьте ссылку на набор Sonar или стикеры Signal. Импортированные из Signal файлы будут публично загружены в Blossom и опубликованы как набор Sonar.</string>
+    <string name="sticker_pack_input_hint">Ссылка на стикеры Sonar или Signal</string>
+    <string name="sticker_import">Импортировать набор стикеров</string>
+    <string name="sticker_search_hint">Поиск наборов стикеров</string>
+    <string name="sticker_no_packs">Наборы стикеров не найдены</string>
+    <string name="sticker_install">Установить</string>
+    <string name="sticker_uninstall">Удалить</string>
+    <string name="sticker_count">Стикеров: %1$d</string>
+    <string name="sticker_emoji_tab">Эмодзи</string>
+    <string name="sticker_stickers_tab">Стикеры</string>
+    <string name="sticker_no_installed">Установите набор стикеров в настройках, чтобы использовать его здесь.</string>
+    <string name="notification_sent_sticker">отправил(а) стикер</string>
+    <string name="sticker_external_signer_unsupported">Для импорта стикеров Signal нужен локально сохранённый ключ подписи.</string>
 </resources>

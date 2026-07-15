@@ -1008,4 +1008,20 @@
     <string name="sign_in_error_public_key">Questa è una chiave pubblica. Inserisci la tua chiave segreta (nsec) per accedere.</string>
     <string name="group_add_members_after_create">Puoi aggiungere membri dopo aver creato il gruppo.</string>
     <string name="confirm_sole_admin_transfer_then_leave_message">Sei l\'unico admin. %1$s diventa admin e tu esci dal gruppo.</string>
+    <string name="sticker">Adesivo</string>
+    <string name="stickers">Adesivi</string>
+    <string name="stickers_settings_subtitle">Scopri, importa e gestisci pacchetti di adesivi</string>
+    <string name="sticker_import_notice">Incolla un link a un pacchetto Sonar o agli adesivi Signal. Le importazioni da Signal vengono caricate pubblicamente su Blossom e pubblicate come pacchetto Sonar.</string>
+    <string name="sticker_pack_input_hint">Link adesivi Sonar o Signal</string>
+    <string name="sticker_import">Importa pacchetto di adesivi</string>
+    <string name="sticker_search_hint">Cerca pacchetti di adesivi</string>
+    <string name="sticker_no_packs">Nessun pacchetto di adesivi trovato</string>
+    <string name="sticker_install">Installa</string>
+    <string name="sticker_uninstall">Disinstalla</string>
+    <string name="sticker_count">%1$d adesivi</string>
+    <string name="sticker_emoji_tab">Faccine</string>
+    <string name="sticker_stickers_tab">Adesivi</string>
+    <string name="sticker_no_installed">Installa un pacchetto di adesivi nelle Impostazioni per usarlo qui.</string>
+    <string name="notification_sent_sticker">ha inviato un adesivo</string>
+    <string name="sticker_external_signer_unsupported">L’importazione di adesivi Signal richiede una chiave di firma archiviata localmente.</string>
 </resources>

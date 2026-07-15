@@ -1008,4 +1008,20 @@
     <string name="sign_in_error_public_key">Ceci est une clé publique. Saisissez votre clé secrète (nsec) pour vous connecter.</string>
     <string name="group_add_members_after_create">Vous pourrez ajouter des membres après avoir créé le groupe.</string>
     <string name="confirm_sole_admin_transfer_then_leave_message">Vous êtes le seul administrateur. %1$s devient admin et vous quittez le groupe.</string>
+    <string name="sticker">Autocollant</string>
+    <string name="stickers">Autocollants</string>
+    <string name="stickers_settings_subtitle">Découvrir, importer et gérer des packs d’autocollants</string>
+    <string name="sticker_import_notice">Collez un lien de pack Sonar ou d’autocollants Signal. Les imports Signal sont téléversés publiquement sur Blossom et publiés comme pack Sonar.</string>
+    <string name="sticker_pack_input_hint">Lien d’autocollants Sonar ou Signal</string>
+    <string name="sticker_import">Importer un pack d’autocollants</string>
+    <string name="sticker_search_hint">Rechercher des packs d’autocollants</string>
+    <string name="sticker_no_packs">Aucun pack d’autocollants trouvé</string>
+    <string name="sticker_install">Installer</string>
+    <string name="sticker_uninstall">Désinstaller</string>
+    <string name="sticker_count">%1$d autocollants</string>
+    <string name="sticker_emoji_tab">Émojis</string>
+    <string name="sticker_stickers_tab">Autocollants</string>
+    <string name="sticker_no_installed">Installez un pack d’autocollants dans les paramètres pour l’utiliser ici.</string>
+    <string name="notification_sent_sticker">a envoyé un autocollant</string>
+    <string name="sticker_external_signer_unsupported">L’import d’autocollants Signal nécessite une clé de signature stockée localement.</string>
 </resources>
