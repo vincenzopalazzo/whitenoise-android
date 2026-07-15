@@ -16,6 +16,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.SecureFlagPolicy
 import dev.ipf.whitenoise.android.R
+import dev.ipf.whitenoise.android.core.InboundStickerRequest
 import dev.ipf.whitenoise.android.core.StickerInput
 import dev.ipf.whitenoise.android.notifications.NotificationNavStep
 import dev.ipf.whitenoise.android.notifications.NotificationTarget
@@ -41,8 +42,8 @@ internal fun MainShell(
     appState: WhiteNoiseAppState,
     inboundNotificationTarget: NotificationTarget? = null,
     onNotificationTargetHandled: (NotificationTarget) -> Unit = {},
-    inboundStickerInput: StickerInput? = null,
-    onStickerInputHandled: (StickerInput) -> Unit = {},
+    inboundStickerRequest: InboundStickerRequest? = null,
+    onStickerRequestHandled: (InboundStickerRequest) -> Unit = {},
 ) {
     var sectionName by rememberSaveable { mutableStateOf(MainSection.Chats.name) }
     var settingsDetailName by rememberSaveable { mutableStateOf<String?>(null) }
@@ -118,18 +119,23 @@ internal fun MainShell(
         chatsController.bind(appState.activeAccountRef)
     }
 
-    LaunchedEffect(inboundStickerInput, appState.appLockScreenVisible) {
-        val input = inboundStickerInput ?: return@LaunchedEffect
-        if (!shouldRouteInboundStickerInput(input, appState.appLockScreenVisible)) return@LaunchedEffect
-        chatListReturnHeadSnap = resetChatListReturnHeadSnap()
-        selectedChat = null
-        selectedChatFocusMessageId = null
-        selectedChatJustCreated = false
-        selectedChatOpenedAsDmHint = false
-        sectionName = MainSection.Settings.name
-        settingsDetailName = SettingsDetail.Stickers.name
-        pendingStickerInput = input
-        onStickerInputHandled(input)
+    LaunchedEffect(inboundStickerRequest, appState.appLockScreenVisible, appState.activeAccountRef) {
+        val request = inboundStickerRequest ?: return@LaunchedEffect
+        when (inboundStickerRoutingDecision(request, appState.activeAccountRef, appState.appLockScreenVisible)) {
+            InboundStickerRoutingDecision.Wait -> return@LaunchedEffect
+            InboundStickerRoutingDecision.Discard -> onStickerRequestHandled(request)
+            InboundStickerRoutingDecision.Route -> {
+                chatListReturnHeadSnap = resetChatListReturnHeadSnap()
+                selectedChat = null
+                selectedChatFocusMessageId = null
+                selectedChatJustCreated = false
+                selectedChatOpenedAsDmHint = false
+                sectionName = MainSection.Settings.name
+                settingsDetailName = SettingsDetail.Stickers.name
+                pendingStickerInput = request.input
+                onStickerRequestHandled(request)
+            }
+        }
     }
 
     // Freshness model for #6: the chat-list subscription stays bound while a
@@ -508,7 +514,20 @@ internal fun MainShell(
     }
 }
 
-internal fun shouldRouteInboundStickerInput(
-    input: StickerInput?,
+internal enum class InboundStickerRoutingDecision {
+    Wait,
+    Route,
+    Discard,
+}
+
+internal fun inboundStickerRoutingDecision(
+    request: InboundStickerRequest?,
+    activeAccountRef: String?,
     appLockScreenVisible: Boolean,
-): Boolean = input != null && !appLockScreenVisible
+): InboundStickerRoutingDecision =
+    when {
+        request == null -> InboundStickerRoutingDecision.Wait
+        request.accountRef != null && request.accountRef != activeAccountRef -> InboundStickerRoutingDecision.Discard
+        activeAccountRef == null || appLockScreenVisible -> InboundStickerRoutingDecision.Wait
+        else -> InboundStickerRoutingDecision.Route
+    }
