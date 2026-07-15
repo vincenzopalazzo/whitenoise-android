@@ -374,6 +374,13 @@ internal fun shouldAcceptMediaUploadForAccount(
         conversationAccountRef == activeAccountRef &&
         capturedMediaUploadSessionEpoch == currentMediaUploadSessionEpoch
 
+internal fun shouldAcceptStickerAssetResult(
+    requestedAccountRef: String,
+    requestedCacheEpoch: Int,
+    activeAccountRef: String?,
+    currentCacheEpoch: Int,
+): Boolean = requestedAccountRef == activeAccountRef && requestedCacheEpoch == currentCacheEpoch
+
 internal data class ConversationNotificationTarget(
     val accountRef: String,
     val groupIdHex: String,
@@ -1253,6 +1260,9 @@ class WhiteNoiseAppState(
     private val mediaUploadSessionEpoch =
         java.util.concurrent.atomic
             .AtomicInteger(0)
+    private val stickerAssetCacheEpoch =
+        java.util.concurrent.atomic
+            .AtomicInteger(0)
     private val notificationJob = NotificationJobSlot()
     private val pushWakeCatchUpDrainJob = NotificationJobSlot()
     private val notificationDrainSequence = AtomicLong(0)
@@ -1853,6 +1863,7 @@ class WhiteNoiseAppState(
     /** Fetches a native-authorized sticker asset and shares concurrent loads. */
     suspend fun stickerAsset(stickerRef: StickerRefFfi): StickerAssetFfi {
         val account = activeAccountRef ?: error("No active account")
+        val cacheEpoch = stickerAssetCacheEpoch.get()
         val cacheKey =
             StickerAssetCacheKey(
                 accountRef = account,
@@ -1879,7 +1890,12 @@ class WhiteNoiseAppState(
                             }
                         }
             }
-        return deferred.await().also { stickerAssetCache.put(cacheKey, it) }
+        val asset = deferred.await()
+        if (!shouldAcceptStickerAssetResult(account, cacheEpoch, activeAccountRef, stickerAssetCacheEpoch.get())) {
+            throw CancellationException("Sticker asset request invalidated")
+        }
+        stickerAssetCache.put(cacheKey, asset)
+        return asset
     }
 
     /**
@@ -2424,6 +2440,14 @@ class WhiteNoiseAppState(
      * cost. The L2 disk cache is also deliberately preserved.
      */
     private fun clearInMemoryMediaCaches() {
+        stickerAssetCacheEpoch.incrementAndGet()
+        val invalidatedStickerLoads =
+            synchronized(inFlightStickerAssetsLock) {
+                inFlightStickerAssets.values.toList().also {
+                    inFlightStickerAssets.clear()
+                }
+            }
+        invalidatedStickerLoads.forEach { it.cancel() }
         mediaPlaintextCache.clear()
         mediaThumbnailCache.clear()
         stickerAssetCache.clear()
